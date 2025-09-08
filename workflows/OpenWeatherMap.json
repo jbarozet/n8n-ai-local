@@ -1,0 +1,214 @@
+{
+  "name": "OpenWeatherMap",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "ba7eaf42-6e92-4b13-b2a0-e62acfca4659",
+      "name": "Start",
+      "type": "n8n-nodes-base.start",
+      "typeVersion": 1,
+      "position": [
+        -576,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://api.openweathermap.org/data/2.5/weather?lat={{ $json.Latitude }}&lon={{ $json.Longitude }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "options": {}
+      },
+      "id": "56675366-f4c9-4d5c-9aa7-4c053a272869",
+      "name": "Get Weather Data",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        -160,
+        -80
+      ],
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "oL9eDYLe9Rod1lKn",
+          "name": "OpenWeather Query Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## OpenWeatherMap API\n",
+        "height": 80,
+        "width": 288,
+        "color": null
+      },
+      "id": "c368dbc0-3e2e-48d4-abd9-ef8251ee71a5",
+      "name": "Display Summary",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -224,
+        -240
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a friendly weather reporter. Based on the following JSON data, provide a brief, human-readable summary of the current weather. Mention the city, the main condition (e.g., \\\"clear sky\\\"), the current temperature, and what the temperature feels like.\\n\\nJSON Data:\\n{{ JSON.stringify($('Get Weather Data').item.json) }}",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        96,
+        -80
+      ],
+      "id": "b5020a4f-d6c0-4796-b2d6-63c703106610",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmOllama",
+      "typeVersion": 1,
+      "position": [
+        96,
+        112
+      ],
+      "id": "5d3ac0ab-7312-4c29-bb06-f14be8b5c191",
+      "name": "Ollama Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "xHuYe0MDGOs9IpBW",
+          "name": "Local Ollama service"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "84da0645-f110-41aa-b09a-84ecf28571f8",
+              "name": "text",
+              "value": "={{ $json.text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        464,
+        -80
+      ],
+      "id": "6d6f253b-3052-4739-864a-98f5ab8e183c",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f5f64e66-f75b-4f9c-87f2-1e6381e65731",
+              "name": "Latitude",
+              "value": "48.864716",
+              "type": "string"
+            },
+            {
+              "id": "add0811a-9b5b-40a5-9d44-17af084be37f",
+              "name": "Longitude",
+              "value": "2.349014",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -368,
+        -80
+      ],
+      "id": "673c3bff-2799-4c52-a872-c919ed989b16",
+      "name": "Latitude/Longitude"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Latitude/Longitude",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Weather Data": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        []
+      ]
+    },
+    "Latitude/Longitude": {
+      "main": [
+        [
+          {
+            "node": "Get Weather Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "1693e601-3b56-45cf-aa2f-fde1fd4fdbd6",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8f40d1b0740d7aa1f3c0fbc93ca78bbf162eb9df22fd17e35e89e73c34f71811"
+  },
+  "id": "odmOHEfm6Ff5uljD",
+  "tags": []
+}
