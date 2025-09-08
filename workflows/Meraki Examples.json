@@ -1,0 +1,543 @@
+{
+  "name": "Meraki Examples",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "8324b4d9-c0f0-4c31-b068-14e4f78e5280",
+      "name": "When clicking \"Execute Workflow\"",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        -1264,
+        16
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "url": "https://api.meraki.com/api/v1/organizations",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "f87f00e7-02e8-4b97-91e4-e7b7d6bc049c",
+      "name": "Get Meraki Organizations",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        -1024,
+        -64
+      ],
+      "typeVersion": 4.1,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "BQnIA3x0tTQwHqqA",
+          "name": "Meraki Header Auth account"
+        }
+      },
+      "notes": "This node uses an API call to Meraki using the URL https://api.meraki.com/api/v1/organizations\n\nthe Authorization header is what is used to authenticate. You also have to set it to accept json"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.meraki.com/api/v1/organizations/{{ $json.OrgID }}/networks  ",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "942d50e6-f9fa-4015-a80e-5561fb19f8a9",
+      "name": "Get Network IDs",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        -624,
+        -144
+      ],
+      "typeVersion": 4.1,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "BQnIA3x0tTQwHqqA",
+          "name": "Meraki Header Auth account"
+        }
+      },
+      "notes": "This node uses a URL with an expression in the middle to do an API call for each ORG ID that was pulled to pull all the network's for each org"
+    },
+    {
+      "parameters": {
+        "fields": {
+          "values": [
+            {
+              "name": "CompanyName",
+              "stringValue": "={{ $json.name }}"
+            },
+            {
+              "name": "OrgID",
+              "stringValue": "={{ $json.id }}"
+            }
+          ]
+        },
+        "include": "selected",
+        "options": {}
+      },
+      "id": "a5bd3bfb-dce9-43d4-93e0-0e2e1323ca11",
+      "name": "Get Org Name & ID",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -800,
+        -144
+      ],
+      "typeVersion": 3.2,
+      "notes": "This takes the output data from the previous node and changes the variables to better suit what we'll be using. "
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "mergeByFields": {
+          "values": [
+            {
+              "field1": "NetworkID",
+              "field2": "networkId"
+            }
+          ]
+        },
+        "joinMode": "enrichInput1",
+        "options": {}
+      },
+      "id": "8ecc58d7-4c41-48cc-a95e-4d4e84e6dfb4",
+      "name": "Combine latency to its respective Network",
+      "type": "n8n-nodes-base.merge",
+      "position": [
+        -144,
+        16
+      ],
+      "notesInFlow": false,
+      "typeVersion": 2.1,
+      "notes": "This node matches on the NetworkID field, so that the networks we pulled earlier and the Loss / Latency can be combined into one dataset"
+    },
+    {
+      "parameters": {
+        "fields": {
+          "values": [
+            {
+              "name": "networkId",
+              "stringValue": "={{ $json.networkId }}"
+            },
+            {
+              "name": "NetworkName",
+              "stringValue": "={{ $json.NetworkName }}"
+            },
+            {
+              "name": "networkURL",
+              "stringValue": "={{ $json.networkURL }}"
+            },
+            {
+              "name": "Serial",
+              "stringValue": "={{ $json.serial }}"
+            },
+            {
+              "name": "TS0-Loss",
+              "stringValue": "={{ $json.timeSeries[0].lossPercent }}"
+            },
+            {
+              "name": "TS1-Loss",
+              "stringValue": "={{ $json.timeSeries[1].lossPercent }}"
+            },
+            {
+              "name": "TS2-Loss",
+              "stringValue": "={{ $json.timeSeries[2].lossPercent }}"
+            },
+            {
+              "name": "TS3-Loss",
+              "stringValue": "={{ $json.timeSeries[3].lossPercent }}"
+            },
+            {
+              "name": "TS4-Loss",
+              "stringValue": "={{ $json.timeSeries[4].lossPercent }}"
+            },
+            {
+              "name": "TS0-Latency",
+              "stringValue": "={{ $json.timeSeries[0].latencyMs }}"
+            },
+            {
+              "name": "TS1-Latency",
+              "stringValue": "={{ $json.timeSeries[1].latencyMs }}"
+            },
+            {
+              "name": "TS2-Latency",
+              "stringValue": "={{ $json.timeSeries[2].latencyMs }}"
+            },
+            {
+              "name": "TS3-Latency",
+              "stringValue": "={{ $json.timeSeries[3].latencyMs }}"
+            },
+            {
+              "name": "TS4-Latency",
+              "stringValue": "={{ $json.timeSeries[4].latencyMs }}"
+            }
+          ]
+        },
+        "include": "selected",
+        "options": {}
+      },
+      "id": "4427d89b-db1a-4ddf-baa4-5fd772b6d096",
+      "name": "Makes Latency and Loss Filterable",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        48,
+        16
+      ],
+      "typeVersion": 3.2,
+      "notes": "Like before, This takes the output data from the previous node and changes the variables to better suit what we'll be using. "
+    },
+    {
+      "parameters": {
+        "jsCode": "// Function to filter items based on averageLatency and averageLoss\nfunction filterItems(items) {\n  return items.filter(item =>\n    item.AverageLatency >300 || item.AverageLoss > 2\n  );\n}\n\n// Get the input items from the previous node\nconst inputItems = items.map(item => item.json); // Adjust based on your actual data structure\n\n// Filter the items based on the conditions\nconst filteredItems = filterItems(inputItems);\n\n// Return the filtered items to the workflow\nreturn filteredItems.map(item => {\n  return { json: item }; // Format each filtered item as JSON\n});\n"
+      },
+      "id": "4efd32b9-5e35-422c-9982-6f90ec6d6ece",
+      "name": "Filters Problematic sites",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        400,
+        16
+      ],
+      "typeVersion": 2,
+      "notes": "This node uses JavaScript to look at the calculated averages and if they pass the threshold for 300ms Latency or 2% Loss it will pass that site info forward"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Assuming $input.all() is an array of items and each item has a json property\nfunction calculateAverages(inputItems) {\n  return inputItems.map(item => {\n    // Calculate total and average loss\n    const totalLoss = \n      parseFloat(item.json['TS0-Loss']) +\n      parseFloat(item.json['TS1-Loss']) +\n      parseFloat(item.json['TS2-Loss']) +\n      parseFloat(item.json['TS3-Loss']) +\n      parseFloat(item.json['TS4-Loss']);\n    const averageLoss = totalLoss / 5;\n    item.json['AverageLoss'] = averageLoss;\n\n    // Calculate total and average latency\n    const totalLatency = \n      parseFloat(item.json['TS0-Latency']) +\n      parseFloat(item.json['TS1-Latency']) +\n      parseFloat(item.json['TS2-Latency']) +\n      parseFloat(item.json['TS3-Latency']) +\n      parseFloat(item.json['TS4-Latency']);\n    const averageLatency = totalLatency / 5;\n    item.json['AverageLatency'] = averageLatency;\n\n    // Return the modified item\n    return item;\n  });\n}\n\nreturn calculateAverages($input.all());\n"
+      },
+      "id": "d50529cf-319b-47a4-b06e-5d7ab752db82",
+      "name": "Average Latency & Loss over 5m",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        224,
+        16
+      ],
+      "typeVersion": 2,
+      "notes": "This node uses JavaScript to calculate the average over the last 5 entries of packet loss and latency"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.meraki.com/api/v1/organizations/{{ $json.id }}/devices/uplinksLossAndLatency?timespan=300",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "a4182d80-ba2e-4d36-aef3-e532aa8be448",
+      "name": "Get Uplink Loss and Latency",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        -800,
+        16
+      ],
+      "typeVersion": 4.1,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "BQnIA3x0tTQwHqqA",
+          "name": "Meraki Header Auth account"
+        }
+      },
+      "notes": "This uses a URL with an expression in the middle so that for each org ID it will pull the Loss and Latency for their uplinks. "
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "*/5 8-16 * * 1-5"
+            }
+          ]
+        }
+      },
+      "id": "e3dd19f0-e239-4061-865e-1fdb880a88a9",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [
+        -1264,
+        -144
+      ],
+      "typeVersion": 1.1,
+      "notes": "schedules the workflow to run every 5 minutes mon-fri 8am-5pm"
+    },
+    {
+      "parameters": {
+        "fields": {
+          "values": [
+            {
+              "name": "NetworkID",
+              "stringValue": "={{ $json.id }}"
+            },
+            {
+              "name": "NetworkName",
+              "stringValue": "={{ $json.name }}"
+            },
+            {
+              "name": "networkURL",
+              "stringValue": "={{ $json.url }}"
+            }
+          ]
+        },
+        "include": "selected",
+        "options": {}
+      },
+      "id": "b75a70f4-0697-4b7f-aa0b-84d84647ba96",
+      "name": "Sets Network Variables",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -416,
+        -144
+      ],
+      "typeVersion": 3.2,
+      "notes": "Like before, This takes the output data from the previous node and changes the variables to better suit what we'll be using. "
+    },
+    {
+      "parameters": {
+        "content": "## Pulling in Info \nThis section pulls in all the data we will need to see any possible errors and generate our alert\n",
+        "height": 462.84878343542437,
+        "width": 791.5865288559442
+      },
+      "id": "2633f610-f008-4d39-883c-12e53c43e983",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1072,
+        -240
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Changing data\nThis section pulls together the data we got from the first section and sets everything up to be notified ",
+        "height": 411.1258278145692,
+        "width": 688.5000872281419
+      },
+      "id": "21d5e53f-5b77-4656-bd59-9f0de5374b3b",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -176,
+        -176
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Explanation\nusing an HTTP request you will can do a get request for all Organizations your Meraki account has access to. \n\nYou will have to Generate your own API key inside of the Meraki Dashboard explained here https://documentation.meraki.com/General_Administration/Other_Topics/Cisco_Meraki_Dashboard_API\n\nYou will have to add two headers to your HTTPS node Authorization and Accept. the 1st is how you'll authenticate with Meraki and the second is how it will know how to answer the request. \n\nUsing the same methods you'll do a get for Organizations, Network IDs and Uplink stats\n\nUsing the Set nodes to organize the data in a \"neat\" way",
+        "height": 394.26386951839356,
+        "width": 673.6064168725538
+      },
+      "id": "366df55a-44b1-4e2f-934e-23b45d1cd851",
+      "name": "Sticky Note3",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1040,
+        272
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Explanation\nthe Merge node will combine the Networks with their respective stats by matching on NetworkID and networkid and enriching the input \n\nagain we add a set node to better organize the statistics of the uplinks. \n\nThe first JS node will average the 5 Time stamps of Latency and Packet loss \n\nThe last JS node will send the data forward only for sites that pass the threshold (in this example 300ms latency and 2% packet loss) ",
+        "height": 389.89870424786454,
+        "width": 645.9603701592033
+      },
+      "id": "55bd1ea6-f131-4226-a054-fe32c74397a4",
+      "name": "Sticky Note4",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -160,
+        288
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## other usecases \n If you feel confident enough the Teams nodes can be replaced with a node that can generate a ticket for your PSA such as ConnectWise Mange. That way these are generating tickets rather than just messages. ",
+        "height": 366.61782280504275,
+        "width": 670.6963066922013
+      },
+      "id": "6251ff3d-4e3d-40a3-aeec-9877a5455b1a",
+      "name": "Sticky Note6",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -176,
+        -704
+      ],
+      "typeVersion": 1
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Get Network IDs": {
+      "main": [
+        [
+          {
+            "node": "Sets Network Variables",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Meraki Organizations",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Org Name & ID": {
+      "main": [
+        [
+          {
+            "node": "Get Network IDs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sets Network Variables": {
+      "main": [
+        [
+          {
+            "node": "Combine latency to its respective Network",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Meraki Organizations": {
+      "main": [
+        [
+          {
+            "node": "Get Org Name & ID",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Uplink Loss and Latency",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filters Problematic sites": {
+      "main": [
+        []
+      ]
+    },
+    "Get Uplink Loss and Latency": {
+      "main": [
+        [
+          {
+            "node": "Combine latency to its respective Network",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Average Latency & Loss over 5m": {
+      "main": [
+        [
+          {
+            "node": "Filters Problematic sites",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking \"Execute Workflow\"": {
+      "main": [
+        [
+          {
+            "node": "Get Meraki Organizations",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Makes Latency and Loss Filterable": {
+      "main": [
+        [
+          {
+            "node": "Average Latency & Loss over 5m",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Combine latency to its respective Network": {
+      "main": [
+        [
+          {
+            "node": "Makes Latency and Loss Filterable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "c73aa288-93c2-4f5f-a71c-6555713a706c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8f40d1b0740d7aa1f3c0fbc93ca78bbf162eb9df22fd17e35e89e73c34f71811"
+  },
+  "id": "nNgMewPFaVpTXmJr",
+  "tags": []
+}

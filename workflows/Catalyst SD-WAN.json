@@ -1,0 +1,341 @@
+{
+  "name": "Catalyst SD-WAN",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "f61340ea-21d7-4497-88b5-0b3d1eaefa15",
+      "name": "Start",
+      "type": "n8n-nodes-base.start",
+      "typeVersion": 1,
+      "position": [
+        -1088,
+        -240
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Catalyst SD-WAN APIs",
+        "height": 80,
+        "width": 288,
+        "color": {}
+      },
+      "id": "8134a4bc-17f0-4973-bc00-d3c3e5c3f741",
+      "name": "Display Summary",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -464,
+        -400
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "77e578aa-4eb7-45ee-b74e-6e6885101ce0",
+              "name": "vmanage",
+              "value": "10.1.1.100",
+              "type": "string"
+            },
+            {
+              "id": "bb6dbbf0-95c0-4c75-b45c-8df57226acd0",
+              "name": "port",
+              "value": 443,
+              "type": "number"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -848,
+        -240
+      ],
+      "id": "b027a5aa-8cc5-4ec8-a898-677dacc42af5",
+      "name": "Parameters"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c6b3e339-fb31-48af-8fa5-5a8f1e656a1d",
+              "name": "vManage",
+              "value": "={{ $('Parameters').item.json.vmanage }}",
+              "type": "string"
+            },
+            {
+              "id": "8b763a29-463c-4040-86e1-e8f70d076c8c",
+              "name": "Port",
+              "value": "={{ $('Parameters').item.json.port }}",
+              "type": "string"
+            },
+            {
+              "id": "c6b4a60e-12a7-4ea7-acc6-dde45323fe29",
+              "name": "Cookie",
+              "value": "={{ $json.headers['set-cookie'][0] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -384,
+        -240
+      ],
+      "id": "bdac152b-b5f4-4ab6-b2bb-4396f5878b4f",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e995598a-c3ce-4169-b328-5fb1d98fa99a",
+              "name": "vManage",
+              "value": "={{ $('Parameters').item.json.vmanage }}",
+              "type": "string"
+            },
+            {
+              "id": "c7cf76d9-5791-4db5-b5e7-a9e65f3806fc",
+              "name": "Port",
+              "value": "={{ $('Parameters').item.json.port }}",
+              "type": "string"
+            },
+            {
+              "id": "30208d93-ed20-4dd1-a4cd-e57d76a4cc18",
+              "name": "Cookie",
+              "value": "={{ $('Login').item.json.headers['set-cookie'][0] }}",
+              "type": "string"
+            },
+            {
+              "id": "22a0739f-6aaf-4bcf-9ecf-76465d825998",
+              "name": "Token",
+              "value": "={{ $json.data }}",
+              "type": "string"
+            },
+            {
+              "id": "c2202325-9d13-44da-be69-b484d801d389",
+              "name": "",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        112,
+        -240
+      ],
+      "id": "e5558189-13f3-4646-a050-90863e4e4dcb",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "url": "=https://{{ $json.vManage }}:{{ $json.Port }}/dataservice/client/token",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "content-type",
+              "value": "application/json"
+            },
+            {
+              "name": "Cookie",
+              "value": "={{ $json.Cookie }}"
+            }
+          ]
+        },
+        "options": {
+          "allowUnauthorizedCerts": true,
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -144,
+        -240
+      ],
+      "id": "313d1204-b9b1-47d1-bf90-ab9e4849f8d7",
+      "name": "GET Token",
+      "notes": "Get an XSRF prevention token, necessary for most POST operations.\nThe response body includes the XSRF token."
+    },
+    {
+      "parameters": {
+        "url": "=https://{{ $json.vManage }}:{{ $json.Port }}/dataservice/device",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Cookie",
+              "value": "={{ $json.Cookie }}"
+            },
+            {
+              "name": "X-XSRF-TOKEN",
+              "value": "={{ $('GET Token').item.json.data }}"
+            }
+          ]
+        },
+        "options": {
+          "allowUnauthorizedCerts": true
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        320,
+        -240
+      ],
+      "id": "32206536-fa37-451d-9514-5674d1120503",
+      "name": "GET Devices"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://{{ $json.vmanage }}:{{ $json.port }}/j_security_check",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpCustomAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/x-www-form-urlencoded"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "options": {
+          "allowUnauthorizedCerts": true,
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "id": "b7c0ecaa-8382-4ce8-b6f7-1d9f8aff8630",
+      "name": "Login",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        -624,
+        -240
+      ],
+      "credentials": {
+        "httpCustomAuth": {
+          "id": "cAN1I5674taGp2hl",
+          "name": "vManage Custom Auth account"
+        }
+      },
+      "notes": "Submit the username and password as j_username and j_password in the body of the POST request.\nWhen a user authenticates successfully, the response body is empty, but the response header includes a valid session cookie. The session token is in the response HTTP cookie, JSESSIONID=<session hash>."
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Parameters",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parameters": {
+      "main": [
+        [
+          {
+            "node": "Login",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "GET Token",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET Token": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "GET Devices",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Login": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET Devices": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "9fd419bf-1c74-4968-88d0-a5edee9278ab",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8f40d1b0740d7aa1f3c0fbc93ca78bbf162eb9df22fd17e35e89e73c34f71811"
+  },
+  "id": "L48mYp9ba2jOYxU0",
+  "tags": []
+}

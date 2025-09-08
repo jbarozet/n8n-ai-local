@@ -10,23 +10,29 @@ minimizing the need for additional installations.
 It includes:
 
 - Self-hosted n8n - Low-code platform with over 400 integrations and advanced AI components
-- Qdrant - Open-source, high performance vector store with an comprehensive API
+- Qdrant - Open-source, high performance vector store with a comprehensive API
 - PostgreSQL - Workhorse of the Data Engineering world, handles large amounts of data safely.
 - Ollama - Cross-platform LLM platform to install and run the latest local LLMs
 - OpenWebUI - Web UI for Ollama and for all kinds of LLM solutions
 
 ## 1. Ollama (local on Mac)
 
-If you’re using a Mac with an M1 or newer processor, you can't expose your GPU to the Podman or Docker instance.
+Ollama is a lightweight, cross-platform tool that lets you run large language models locally on your machine.
+It provides a simple command-line interface to download, install, and interact with various open-source models
+like Llama, Mistral, CodeLlama, and others without needing complex setup or cloud dependencies
 
-So the option used here is to run Ollama on your Mac (not in Podman) for faster inference, and connect to that from the n8n instance.
+If you’re using a Mac with an M1 or newer processor, you can't expose your GPU to the Podman or Docker instance.
+For optimal performance, we run Ollama directly on the host Mac rather than inside Podman, then connect to it from the n8n container.
 
 To install Ollama on a Mac, download the installer from the [Ollama website](https://ollama.com/),
 extract the .zip file, and drag the Ollama.app to your Applications folder.
 
-Then, open the app and follow the setup wizard to complete the installation.
+Installing Ollama on Mac:
 
-This will install the server (you should have a new icon in the top bar) and the command line version (ollama).
+- Download installer from [Ollama website](https://ollama.com/)
+- Extract .zip and drag Ollama.app to Applications folder
+- Open app and complete setup wizard
+- Confirms installation of both server (menu bar icon) and CLI tool (ollama command)
 
 Install your first model that will be used by n8n defaulty workflow (next section).
 
@@ -34,10 +40,10 @@ Install your first model that will be used by n8n defaulty workflow (next sectio
 ollama pull llama3.2:latest
 ```
 
-Once ollama is installed and server is running, external applications can access using:
+Once ollama is installed and server is running, external applications can access ollama APIs using:
 
-- "http://localhost:11434" if application runs natively on mac
-- "http://host.docker.internal:11434/" is application runs in podman (or docker) containers.
+- <http://localhost:11434> if application runs natively on mac
+- <http://host.docker.internal:11434/> is application runs in podman (or docker) containers.
 
 ## 2. Podman
 
@@ -63,27 +69,29 @@ Using Podman in a corporate environment offers several advantages:
 1. Visit the [Podman website](https://podman.io/getting-started/installation)
 2. Download the macOS installer package
 3. Run the installer and follow the prompts
-4. Open Terminal and initialize Podman:
-
-Use the podman installer (and not brew installation that is not providing krunkit binary).
+4. Open Terminal and initialize Podman
 
 ```shell
 podman machine init
 podman machine start
 ```
 
+> Note: Use the podman installer (and not brew installation that is not providing krunkit binary).
+
 ### Podman Desktop GUI
 
 For those who like a graphical interface, Podman Desktop provides an easy-to-use GUI:
 
-1. Download Podman Desktop from [podman-desktop.io](https://podman-desktop.io/)
+1. Download Podman Desktop from [podman-desktop.io](https://podman-desktop.io/downloads)
 2. Install and launch the application
 3. The GUI allows you to manage containers, images, and volumes without command-line use
 4. You can perform all the same operations through the UI interface and command line
 
+> Note: Installing Podman Desktop automatically includes the Podman CLI tools, giving you both the graphical interface and command-line access.
+
 ### Customizing the podman machine (Optional)
 
-> Note: NO NEED TO DO THIS STEP, just shown as an example if you want to customize your machine.
+> Note: This step is optional - shown only as an example for custom configurations.
 
 Another interesting benefit of having easy access to the machine is that you can tweak it for a specific usage, such as one that requires more computational power.
 
@@ -151,6 +159,17 @@ After completing the installation steps above and when you see in the n8n contai
 - Open the included workflow: <http://localhost:5678/workflow/srOnR8PAY3u4RSwb>
 - Click the Chat button at the bottom of the canvas, to start running the workflow.
 
+Using your browser, access services:
+
+- n8n: <http://localhost:5678/>
+- Qdrant vector database: <http://localhost:6333/dashboard>
+- OpenWebUI: <http://localhost:3000>
+
+From n8n, summary of API URLs:
+
+- Qdrant API: http://host.docker.internal:6333
+- Ollama API: http://host.docker.internal:11434
+
 ### Upgrading
 
 ```shell
@@ -175,10 +194,9 @@ If automatic detection fails:
 - Set Ollama API URL to: http://host.docker.internal:11434
 - Click Save
 
+## 5. Appendix 1: standalone OpenWebUI container (podman)
 
-## 5. Appendix: standalone OpenWebUI container (podman)
-
-> NOTE: This is not required. This is only if you want to quickly run OpenWebUI alone with ollama, without n8n.
+> Note: This is a standalone example for running OpenWebUI independently - not part of the main installation process, which already includes OpenWebUI in the docker-compose setup.
 
 [Open WebUI](https://github.com/open-webui/open-webui) is the most **popular and feature-rich solution to get a web UI** for Ollama.
 The project initially aimed at helping you work with Ollama. 
@@ -187,8 +205,6 @@ But, as it evolved, it wants to be a web UI provider for all kinds of LLM soluti
 It supports OpenAI-compatible APIs and works entirely offline.
 You can install it quickly using Docker or Kubernetes.
 Furthermore, it features a Progressive Web App for mobile, and image generation integrations.
-
-### Installing OpenWebUI (standalone containers)
 
 With Podman ready, we can pull and run OpenWebUI:
 
@@ -207,8 +223,6 @@ If you get a port conflict, you can use a different port:
 podman run -d -p 3001:8080 --name open-webui -v open-webui:/app/backend/data ghcr.io/open-webui/open-webui:main
 ```
 
-### Connecting to Ollama
-
 Once OpenWebUI is running:
 
 - Open your browser to `http://localhost:3000` (or `3001` if you changed the port)
@@ -217,6 +231,6 @@ Once OpenWebUI is running:
 - Click Settings
 - Select Connections on the left
 - Set Ollama API URL to: http://host.docker.internal:11434
-- Click Save 
+- Click Save
 
 > Note: if OpenWebUI runs natively on your mac, then ollama url is: `http://localhost:11434`
