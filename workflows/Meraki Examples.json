@@ -7,8 +7,8 @@
       "name": "When clicking \"Execute Workflow\"",
       "type": "n8n-nodes-base.manualTrigger",
       "position": [
-        -1264,
-        16
+        -1232,
+        384
       ],
       "typeVersion": 1
     },
@@ -42,8 +42,8 @@
       "typeVersion": 4.1,
       "credentials": {
         "httpHeaderAuth": {
-          "id": "BQnIA3x0tTQwHqqA",
-          "name": "Meraki Header Auth account"
+          "id": "hpG3Qh1AuqoUbeOO",
+          "name": "Header Auth account"
         }
       },
       "notes": "This node uses an API call to Meraki using the URL https://api.meraki.com/api/v1/organizations\n\nthe Authorization header is what is used to authenticate. You also have to set it to accept json"
@@ -81,8 +81,8 @@
       "typeVersion": 4.1,
       "credentials": {
         "httpHeaderAuth": {
-          "id": "BQnIA3x0tTQwHqqA",
-          "name": "Meraki Header Auth account"
+          "id": "hpG3Qh1AuqoUbeOO",
+          "name": "Header Auth account"
         }
       },
       "notes": "This node uses a URL with an expression in the middle to do an API call for each ORG ID that was pulled to pull all the network's for each org"
@@ -108,7 +108,7 @@
       "name": "Get Org Name & ID",
       "type": "n8n-nodes-base.set",
       "position": [
-        -800,
+        -816,
         -144
       ],
       "typeVersion": 3.2,
@@ -132,8 +132,8 @@
       "name": "Combine latency to its respective Network",
       "type": "n8n-nodes-base.merge",
       "position": [
-        -144,
-        16
+        -80,
+        0
       ],
       "notesInFlow": false,
       "typeVersion": 2.1,
@@ -208,8 +208,8 @@
       "name": "Makes Latency and Loss Filterable",
       "type": "n8n-nodes-base.set",
       "position": [
-        48,
-        16
+        128,
+        0
       ],
       "typeVersion": 3.2,
       "notes": "Like before, This takes the output data from the previous node and changes the variables to better suit what we'll be using. "
@@ -222,8 +222,8 @@
       "name": "Filters Problematic sites",
       "type": "n8n-nodes-base.code",
       "position": [
-        400,
-        16
+        544,
+        0
       ],
       "typeVersion": 2,
       "notes": "This node uses JavaScript to look at the calculated averages and if they pass the threshold for 300ms Latency or 2% Loss it will pass that site info forward"
@@ -236,8 +236,8 @@
       "name": "Average Latency & Loss over 5m",
       "type": "n8n-nodes-base.code",
       "position": [
-        224,
-        16
+        336,
+        0
       ],
       "typeVersion": 2,
       "notes": "This node uses JavaScript to calculate the average over the last 5 entries of packet loss and latency"
@@ -266,14 +266,14 @@
       "name": "Get Uplink Loss and Latency",
       "type": "n8n-nodes-base.httpRequest",
       "position": [
-        -800,
+        -688,
         16
       ],
       "typeVersion": 4.1,
       "credentials": {
         "httpHeaderAuth": {
-          "id": "BQnIA3x0tTQwHqqA",
-          "name": "Meraki Header Auth account"
+          "id": "hpG3Qh1AuqoUbeOO",
+          "name": "Header Auth account"
         }
       },
       "notes": "This uses a URL with an expression in the middle so that for each org ID it will pull the Loss and Latency for their uplinks. "
@@ -293,8 +293,8 @@
       "name": "Schedule Trigger",
       "type": "n8n-nodes-base.scheduleTrigger",
       "position": [
-        -1264,
-        -144
+        -1312,
+        -64
       ],
       "typeVersion": 1.1,
       "notes": "schedules the workflow to run every 5 minutes mon-fri 8am-5pm"
@@ -333,14 +333,14 @@
     {
       "parameters": {
         "content": "## Pulling in Info \nThis section pulls in all the data we will need to see any possible errors and generate our alert\n",
-        "height": 462.84878343542437,
-        "width": 791.5865288559442
+        "height": 463,
+        "width": 856
       },
       "id": "2633f610-f008-4d39-883c-12e53c43e983",
       "name": "Sticky Note",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        -1072,
+        -1104,
         -240
       ],
       "typeVersion": 1
@@ -348,15 +348,15 @@
     {
       "parameters": {
         "content": "## Changing data\nThis section pulls together the data we got from the first section and sets everything up to be notified ",
-        "height": 411.1258278145692,
-        "width": 688.5000872281419
+        "height": 411,
+        "width": 817
       },
       "id": "21d5e53f-5b77-4656-bd59-9f0de5374b3b",
       "name": "Sticky Note1",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        -176,
-        -176
+        -144,
+        -192
       ],
       "typeVersion": 1
     },
@@ -364,14 +364,15 @@
       "parameters": {
         "content": "## Explanation\nusing an HTTP request you will can do a get request for all Organizations your Meraki account has access to. \n\nYou will have to Generate your own API key inside of the Meraki Dashboard explained here https://documentation.meraki.com/General_Administration/Other_Topics/Cisco_Meraki_Dashboard_API\n\nYou will have to add two headers to your HTTPS node Authorization and Accept. the 1st is how you'll authenticate with Meraki and the second is how it will know how to answer the request. \n\nUsing the same methods you'll do a get for Organizations, Network IDs and Uplink stats\n\nUsing the Set nodes to organize the data in a \"neat\" way",
         "height": 394.26386951839356,
-        "width": 673.6064168725538
+        "width": 673.6064168725538,
+        "color": 4
       },
       "id": "366df55a-44b1-4e2f-934e-23b45d1cd851",
       "name": "Sticky Note3",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        -1040,
-        272
+        -1088,
+        -672
       ],
       "typeVersion": 1
     },
@@ -379,34 +380,821 @@
       "parameters": {
         "content": "## Explanation\nthe Merge node will combine the Networks with their respective stats by matching on NetworkID and networkid and enriching the input \n\nagain we add a set node to better organize the statistics of the uplinks. \n\nThe first JS node will average the 5 Time stamps of Latency and Packet loss \n\nThe last JS node will send the data forward only for sites that pass the threshold (in this example 300ms latency and 2% packet loss) ",
         "height": 389.89870424786454,
-        "width": 645.9603701592033
+        "width": 645.9603701592033,
+        "color": 4
       },
       "id": "55bd1ea6-f131-4226-a054-fe32c74397a4",
       "name": "Sticky Note4",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        -160,
-        288
+        -112,
+        -624
       ],
       "typeVersion": 1
     },
     {
       "parameters": {
-        "content": "## other usecases \n If you feel confident enough the Teams nodes can be replaced with a node that can generate a ticket for your PSA such as ConnectWise Mange. That way these are generating tickets rather than just messages. ",
-        "height": 366.61782280504275,
-        "width": 670.6963066922013
+        "url": "=https://api.meraki.com/api/v1/networks/{{ $json.id }}/appliance/connectivityMonitoringDestinations ",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
       },
-      "id": "6251ff3d-4e3d-40a3-aeec-9877a5455b1a",
-      "name": "Sticky Note6",
-      "type": "n8n-nodes-base.stickyNote",
+      "id": "ab9e9ccf-7bd2-48f2-b7bd-ddaecc69cf27",
+      "name": "Get Meraki Network connectivity",
+      "type": "n8n-nodes-base.httpRequest",
       "position": [
-        -176,
-        -704
+        -112,
+        384
       ],
-      "typeVersion": 1
+      "typeVersion": 4.1,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "hpG3Qh1AuqoUbeOO",
+          "name": "Header Auth account"
+        }
+      },
+      "notes": "This node uses an API call to Meraki using the URL https://api.meraki.com/api/v1/organizations\n\nthe Authorization header is what is used to authenticate. You also have to set it to accept json"
+    },
+    {
+      "parameters": {
+        "url": "https://api.meraki.com/api/v1/organizations",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "78405d4b-1490-4bbe-9163-36cef012f088",
+      "name": "Get Meraki Organizations1",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        -880,
+        384
+      ],
+      "typeVersion": 4.1,
+      "alwaysOutputData": true,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "hpG3Qh1AuqoUbeOO",
+          "name": "Meraki Header Auth account"
+        }
+      },
+      "notes": "This node uses an API call to Meraki using the URL https://api.meraki.com/api/v1/organizations\n\nthe Authorization header is what is used to authenticate. You also have to set it to accept json"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4de95967-fed9-4828-a32e-f196b361ca2f",
+              "name": "network",
+              "value": "={{ $('Get Networks').item.json.name }}",
+              "type": "string"
+            },
+            {
+              "id": "738a3c1f-f7cd-4ace-9a0f-d182b0afbdaf",
+              "name": "destination-ipv4",
+              "value": "={{ $('Get Meraki Network connectivity').item.json.destinations[0].ip }}",
+              "type": "string"
+            },
+            {
+              "id": "1d0d7ac2-1dad-41a1-9595-570dfb378a4a",
+              "name": "destination-ipv6",
+              "value": "={{ $('Get Meraki Network connectivity').item.json.destinations[1].ip }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        160,
+        384
+      ],
+      "id": "1ca2f1f2-30eb-42bd-9170-e62d52571da3",
+      "name": "destinations"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.meraki.com/api/v1/organizations/{{ $json.OrgID }}/devices ",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "e670fa83-237b-4f84-9cce-371ebb6975da",
+      "name": "Get Devices",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        -432,
+        976
+      ],
+      "typeVersion": 4.1,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "hpG3Qh1AuqoUbeOO",
+          "name": "Meraki Header Auth account"
+        }
+      },
+      "notes": "This node uses a URL with an expression in the middle to do an API call for each ORG ID that was pulled to pull all the network's for each org"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.meraki.com/api/v1/organizations/{{ $json.OrgID }}/networks  ",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "95dcaeda-4d34-4328-a294-192f3ab36038",
+      "name": "Get Networks",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        -384,
+        384
+      ],
+      "typeVersion": 4.1,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "hpG3Qh1AuqoUbeOO",
+          "name": "Meraki Header Auth account"
+        }
+      },
+      "notes": "This node uses a URL with an expression in the middle to do an API call for each ORG ID that was pulled to pull all the network's for each org"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.meraki.com/api/v1/devices/{{ $json.serial }}/appliance/uplinks/settings",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "19f268a6-3291-425d-a683-7746d2a8ec0c",
+      "name": "Get Uplinks",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        192,
+        976
+      ],
+      "typeVersion": 4.1,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "hpG3Qh1AuqoUbeOO",
+          "name": "Meraki Header Auth account"
+        }
+      },
+      "notes": "This node uses a URL with an expression in the middle to do an API call for each ORG ID that was pulled to pull all the network's for each org"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "3391ddb9-1b45-433d-a580-8852e1bba396",
+              "leftValue": "={{ $json.productType }}",
+              "rightValue": "appliance",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -112,
+        976
+      ],
+      "id": "e8e5f01c-dcce-4627-83ad-fec023bdaf37",
+      "name": "Filter appliances"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.meraki.com/api/v1/organizations/{{ $json.id }}/auth/radius/servers",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "0ef325a9-52e4-48e3-9292-9ff7ec0d76a6",
+      "name": "Get Radius",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        -608,
+        1152
+      ],
+      "typeVersion": 4.1,
+      "alwaysOutputData": true,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "hpG3Qh1AuqoUbeOO",
+          "name": "Meraki Header Auth account"
+        }
+      },
+      "notes": "This node uses a URL with an expression in the middle to do an API call for each ORG ID that was pulled to pull all the network's for each org"
+    },
+    {
+      "parameters": {
+        "fields": {
+          "values": [
+            {
+              "name": "CompanyName",
+              "stringValue": "={{ $json.name }}"
+            },
+            {
+              "name": "OrgID",
+              "stringValue": "={{ $json.id }}"
+            }
+          ]
+        },
+        "include": "selected",
+        "options": {}
+      },
+      "id": "222b91b1-ed89-49d5-bee4-e0893b391e20",
+      "name": "Set Org Name & ID",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -640,
+        384
+      ],
+      "typeVersion": 3.2,
+      "notes": "This takes the output data from the previous node and changes the variables to better suit what we'll be using. "
+    },
+    {
+      "parameters": {
+        "url": "=https://api.meraki.com/api/v1/networks/{{ $json.id }}/appliance/staticRoutes",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "5308e536-2916-42a5-9cc9-4db68d745a29",
+      "name": "Get Static Routes",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        -112,
+        592
+      ],
+      "typeVersion": 4.1,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "hpG3Qh1AuqoUbeOO",
+          "name": "Meraki Header Auth account"
+        }
+      },
+      "notes": "This node uses a URL with an expression in the middle to do an API call for each ORG ID that was pulled to pull all the network's for each org"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.meraki.com/api/v1/networks/{{ $json.id }}/appliance/vpn/siteToSiteVpn",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "1c71da55-517a-40c0-a3ae-a6e49f5280cd",
+      "name": "Get Site to Site vpn",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        -112,
+        784
+      ],
+      "typeVersion": 4.1,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "hpG3Qh1AuqoUbeOO",
+          "name": "Meraki Header Auth account"
+        }
+      },
+      "notes": "This node uses a URL with an expression in the middle to do an API call for each ORG ID that was pulled to pull all the network's for each org"
     }
   ],
-  "pinData": {},
+  "pinData": {
+    "destinations": [
+      {
+        "json": {
+          "network": "MAS_BONHEUR",
+          "destination-ipv4": "8.8.8.8",
+          "destination-ipv6": null
+        }
+      },
+      {
+        "json": {
+          "network": "JMB_TEST",
+          "destination-ipv4": "8.8.8.8",
+          "destination-ipv6": null
+        }
+      },
+      {
+        "json": {
+          "network": "RTP6-Branch1",
+          "destination-ipv4": "8.8.8.8",
+          "destination-ipv6": "2620:12f:c00c::a"
+        }
+      },
+      {
+        "json": {
+          "network": "RTP6-DC1",
+          "destination-ipv4": "8.8.8.8",
+          "destination-ipv6": "2620:12f:c00c::a"
+        }
+      },
+      {
+        "json": {
+          "network": "RTP6-Branch2",
+          "destination-ipv4": "8.8.8.8",
+          "destination-ipv6": null
+        }
+      },
+      {
+        "json": {
+          "network": "RTP6-Branch5",
+          "destination-ipv4": "8.8.8.8",
+          "destination-ipv6": null
+        }
+      },
+      {
+        "json": {
+          "network": "RTP6-DC2",
+          "destination-ipv4": "8.8.8.8",
+          "destination-ipv6": null
+        }
+      },
+      {
+        "json": {
+          "network": "RTP6-Branch11",
+          "destination-ipv4": "8.8.8.8",
+          "destination-ipv6": null
+        }
+      },
+      {
+        "json": {
+          "network": "RTP-Branch12",
+          "destination-ipv4": "8.8.8.8",
+          "destination-ipv6": null
+        }
+      },
+      {
+        "json": {
+          "network": "RTP6-Branch3",
+          "destination-ipv4": "8.8.8.8",
+          "destination-ipv6": "2620:12f:c00c::a"
+        }
+      }
+    ],
+    "Get Uplinks": [
+      {
+        "json": {
+          "interfaces": {
+            "wan1": {
+              "enabled": true,
+              "vlanTagging": {
+                "enabled": false
+              },
+              "svis": {
+                "ipv4": {
+                  "assignmentMode": "dynamic"
+                },
+                "ipv6": {
+                  "assignmentMode": "dynamic"
+                }
+              },
+              "pppoe": {
+                "enabled": false
+              }
+            },
+            "wan2": {
+              "enabled": true,
+              "vlanTagging": {
+                "enabled": false
+              },
+              "svis": {
+                "ipv4": {
+                  "assignmentMode": "static",
+                  "gateway": "64.101.25.1",
+                  "address": "64.101.25.10/24",
+                  "nameservers": {
+                    "addresses": [
+                      "64.102.6.247"
+                    ]
+                  }
+                },
+                "ipv6": {
+                  "assignmentMode": "dynamic"
+                }
+              },
+              "pppoe": {
+                "enabled": false
+              }
+            }
+          }
+        }
+      },
+      {
+        "json": {
+          "interfaces": {
+            "wan1": {
+              "enabled": true,
+              "vlanTagging": {
+                "enabled": false
+              },
+              "svis": {
+                "ipv4": {
+                  "assignmentMode": "dynamic"
+                },
+                "ipv6": {
+                  "assignmentMode": "dynamic"
+                }
+              },
+              "pppoe": {
+                "enabled": false
+              }
+            },
+            "wan2": {
+              "enabled": true,
+              "vlanTagging": {
+                "enabled": false
+              },
+              "svis": {
+                "ipv4": {
+                  "assignmentMode": "dynamic"
+                },
+                "ipv6": {
+                  "assignmentMode": "dynamic"
+                }
+              },
+              "pppoe": {
+                "enabled": false
+              }
+            }
+          }
+        }
+      },
+      {
+        "json": {
+          "interfaces": {
+            "wan1": {
+              "enabled": true,
+              "vlanTagging": {
+                "enabled": false
+              },
+              "svis": {
+                "ipv4": {
+                  "assignmentMode": "dynamic"
+                },
+                "ipv6": {
+                  "assignmentMode": "dynamic"
+                }
+              },
+              "pppoe": {
+                "enabled": false
+              }
+            },
+            "wan2": {
+              "enabled": true,
+              "vlanTagging": {
+                "enabled": false
+              },
+              "svis": {
+                "ipv4": {
+                  "assignmentMode": "dynamic"
+                },
+                "ipv6": {
+                  "assignmentMode": "dynamic"
+                }
+              },
+              "pppoe": {
+                "enabled": false
+              }
+            },
+            "wan3": {
+              "enabled": true,
+              "vlanTagging": {
+                "enabled": false
+              },
+              "svis": {
+                "ipv4": {
+                  "assignmentMode": "dynamic"
+                },
+                "ipv6": {
+                  "assignmentMode": "dynamic"
+                }
+              },
+              "pppoe": {
+                "enabled": false
+              }
+            }
+          }
+        }
+      },
+      {
+        "json": {
+          "interfaces": {
+            "wan1": {
+              "enabled": true,
+              "vlanTagging": {
+                "enabled": false
+              },
+              "svis": {
+                "ipv4": {
+                  "assignmentMode": "dynamic"
+                },
+                "ipv6": {
+                  "assignmentMode": "dynamic"
+                }
+              },
+              "pppoe": {
+                "enabled": false
+              }
+            },
+            "wan2": {
+              "enabled": true,
+              "vlanTagging": {
+                "enabled": false
+              },
+              "svis": {
+                "ipv4": {
+                  "assignmentMode": "dynamic"
+                },
+                "ipv6": {
+                  "assignmentMode": "dynamic"
+                }
+              },
+              "pppoe": {
+                "enabled": false
+              }
+            },
+            "wan3": {
+              "enabled": true,
+              "vlanTagging": {
+                "enabled": false
+              },
+              "svis": {
+                "ipv4": {
+                  "assignmentMode": "dynamic"
+                },
+                "ipv6": {
+                  "assignmentMode": "dynamic"
+                }
+              },
+              "pppoe": {
+                "enabled": false
+              }
+            }
+          }
+        }
+      },
+      {
+        "json": {
+          "interfaces": {
+            "wan1": {
+              "enabled": true,
+              "vlanTagging": {
+                "enabled": false
+              },
+              "svis": {
+                "ipv4": {
+                  "assignmentMode": "dynamic"
+                },
+                "ipv6": {
+                  "assignmentMode": "dynamic"
+                }
+              },
+              "pppoe": {
+                "enabled": false
+              }
+            },
+            "wan2": {
+              "enabled": true,
+              "vlanTagging": {
+                "enabled": false
+              },
+              "svis": {
+                "ipv4": {
+                  "assignmentMode": "static",
+                  "gateway": "65.100.25.1",
+                  "address": "65.100.25.2/30",
+                  "nameservers": {
+                    "addresses": [
+                      "64.102.6.247"
+                    ]
+                  }
+                },
+                "ipv6": {
+                  "assignmentMode": "dynamic"
+                }
+              },
+              "pppoe": {
+                "enabled": false
+              }
+            },
+            "wan3": {
+              "enabled": true,
+              "vlanTagging": {
+                "enabled": false
+              },
+              "svis": {
+                "ipv4": {
+                  "assignmentMode": "dynamic"
+                },
+                "ipv6": {
+                  "assignmentMode": "dynamic"
+                }
+              },
+              "pppoe": {
+                "enabled": false
+              }
+            }
+          }
+        }
+      },
+      {
+        "json": {
+          "interfaces": {
+            "wan1": {
+              "enabled": true,
+              "vlanTagging": {
+                "enabled": false
+              },
+              "svis": {
+                "ipv4": {
+                  "assignmentMode": "dynamic"
+                },
+                "ipv6": {
+                  "assignmentMode": "dynamic"
+                }
+              },
+              "pppoe": {
+                "enabled": false
+              }
+            },
+            "wan2": {
+              "enabled": true,
+              "vlanTagging": {
+                "enabled": false
+              },
+              "svis": {
+                "ipv4": {
+                  "assignmentMode": "dynamic"
+                },
+                "ipv6": {
+                  "assignmentMode": "dynamic"
+                }
+              },
+              "pppoe": {
+                "enabled": false
+              }
+            },
+            "wan3": {
+              "enabled": true,
+              "vlanTagging": {
+                "enabled": false
+              },
+              "svis": {
+                "ipv4": {
+                  "assignmentMode": "dynamic"
+                },
+                "ipv6": {
+                  "assignmentMode": "dynamic"
+                }
+              },
+              "pppoe": {
+                "enabled": false
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
   "connections": {
     "Get Network IDs": {
       "main": [
@@ -421,13 +1209,7 @@
     },
     "Schedule Trigger": {
       "main": [
-        [
-          {
-            "node": "Get Meraki Organizations",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "Get Org Name & ID": {
@@ -499,7 +1281,7 @@
       "main": [
         [
           {
-            "node": "Get Meraki Organizations",
+            "node": "Get Meraki Organizations1",
             "type": "main",
             "index": 0
           }
@@ -527,13 +1309,99 @@
           }
         ]
       ]
+    },
+    "Get Meraki Organizations1": {
+      "main": [
+        [
+          {
+            "node": "Set Org Name & ID",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Radius",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Meraki Network connectivity": {
+      "main": [
+        [
+          {
+            "node": "destinations",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Networks": {
+      "main": [
+        [
+          {
+            "node": "Get Meraki Network connectivity",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Static Routes",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Site to Site vpn",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Devices": {
+      "main": [
+        [
+          {
+            "node": "Filter appliances",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter appliances": {
+      "main": [
+        [
+          {
+            "node": "Get Uplinks",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Org Name & ID": {
+      "main": [
+        [
+          {
+            "node": "Get Networks",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Devices",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "c73aa288-93c2-4f5f-a71c-6555713a706c",
+  "versionId": "644fd745-6fae-4d1a-93d7-a90f99c25450",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "8f40d1b0740d7aa1f3c0fbc93ca78bbf162eb9df22fd17e35e89e73c34f71811"
